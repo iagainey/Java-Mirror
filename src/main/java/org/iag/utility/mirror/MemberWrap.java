@@ -787,6 +787,47 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * @see java.lang.Object#toString()
+	 * @return {@link MemberWrap#getSignature()}
+	 */
+	public @NonNull String
+		   toString(){
+		return getSignature();
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 * @return {@link Member#hashCode()} if {@link MemberWrap#isMember()} is
+	 *         {@code true}, else {@code 0}.
+	 */
+	public int
+		   hashCode(){
+		return member != null ? member.hashCode()
+							  : 0;
+	}
+
+	/**
+	 * @see Objects#equals(Object, Object)
+	 * 
+	 * @param obj
+	 * @return {@code true} if {@link member} equals the obj or if obj is a
+	 *         {@link MemberWrap} obj's {@link member}.
+	 */
+	public boolean
+		   equals( Object obj ){
+		if( obj instanceof MemberWrap ){
+			return Objects.equals( this.getMember(),
+								   ((MemberWrap<?,
+												?>) obj).getMember() );
+		}
+		if( obj instanceof AccessibleObject ){
+			return Objects.equals( this.getMember(),
+								   obj );
+		}
+		return false;
+	}
+
+	/**
 	 * @see Class#getField(String)
 	 * @see Class#getDeclaredField(String)
 	 * 
