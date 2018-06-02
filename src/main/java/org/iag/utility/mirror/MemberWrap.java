@@ -501,33 +501,55 @@ public class MemberWrap< C,
 		}
 		return false;
 	}
+
+	/**
+	 * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
+	 * @return if {@link member} is {@code null} then {@code null}, else
+	 *         {@link AccessibleObject#getAnnotation(Class)}
+	 */
 	@Override
 	public < T extends Annotation >
-		   T
-		   getAnnotation( Class<T> arg0 ){
-		// TODO Auto-generated method stub
-		return null;
+		   @Nullable T
+		   getAnnotation( @NonNull Class<T> arg0 ){
+		return member != null ? member.getAnnotation( arg0 )
+							  : null;
 	}
 
+	/**
+	 * @see java.lang.reflect.AnnotatedElement#getAnnotations()
+	 * @return if {@link member} is {@code null} then an empty array, else
+	 *         {@link AccessibleObject#getAnnotations()}
+	 */
 	@Override
-	public Annotation[]
+	public @NonNull Annotation[]
 		   getAnnotations(){
-		// TODO Auto-generated method stub
-		return null;
+		return member != null ? member.getAnnotations()
+							  : new Annotation[0];
 	}
 
+	/**
+	 * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
+	 * @return if {@link member} is {@code null} then an empty array, else
+	 *         {@link AccessibleObject#getDeclaredAnnotations()}
+	 */
 	@Override
 	public Annotation[]
 		   getDeclaredAnnotations(){
-		// TODO Auto-generated method stub
-		return null;
+		return member != null ? member.getDeclaredAnnotations()
+							  : new Annotation[0];
 	}
 
+	/**
+	 * @see java.lang.reflect.Member#getDeclaringClass()
+	 * @return if {@link member} is {@code null} then {@code void.class}, else
+	 *         {@link AccessibleObject#getDeclaringClass()}
+	 */
+	@SuppressWarnings( "unchecked" )
 	@Override
-	public @Nullable Class<? super C>
+	public @NonNull Class<? super C>
 		   getDeclaringClass(){
-		// TODO Auto-generated method stub
-		return null;
+		return (Class<? super C>) runByMember( Member::getDeclaringClass,
+											   void.class );
 	}
 
 	/**
@@ -543,25 +565,39 @@ public class MemberWrap< C,
 							4096 );
 	}
 
+	/**
+	 * @see java.lang.reflect.Member#getName()
+	 * @return if the {@link member} is {@code null}, returns {@code "null"}
+	 *         else {@link Member#getName()}
+	 */
 	@Override
 	public @NonNull String
 		   getName(){
-		// TODO Auto-generated method stub
-		return "null";
+		return runByMember( Member::getName,
+							"null" );
 	}
 
+	/**
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty array, else {@link Executable#getParameterTypes()}
+	 */
+	public @NonNull Class<?>[]
+		   getParameterTypes(){
+		return runByExecutable( exe-> exe.getParameterTypes(),
+								new Class<?>[0] );
+	}
+
+	/**
+	 * @see java.lang.reflect.GenericDeclaration#getTypeParameters()
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor}
+	 *         then an empty array, else
+	 *         {@link GenericDeclaration#getTypeParameters()}
+	 */
 	@Override
 	public TypeVariable<?>[]
 		   getTypeParameters(){
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean
-		   isSynthetic(){
-		// TODO Auto-generated method stub
-		return false;
+		return member instanceof GenericDeclaration ? ((GenericDeclaration) member).getTypeParameters()
+													: new TypeVariable<?>[0];
 	}
 
 	/**
@@ -582,7 +618,15 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * @see java.lang.reflect.Member#isSynthetic()
+	 * @return if {@link member} is {@code null} then {@code false}, else
+	 *         {@link Member#isSynthetic}
 	 */
+	@Override
+	public boolean
+		   isSynthetic(){
+		return runByMember( Member::isSynthetic,
+							false );
 	}
 
 	/**
@@ -616,6 +660,12 @@ public class MemberWrap< C,
 											: onNull;
 	}
 
+	/**
+	 * 
+	 * @param onMember
+	 * @return if {@link member} is not {@code null}, then
+	 *         {@link Function#apply(Object)}, else {@code null}.
+	 */
 	protected < O >
 			  @Nullable O
 			  runByMember( @NonNull Function<? super Member,
