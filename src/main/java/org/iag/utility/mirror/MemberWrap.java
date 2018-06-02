@@ -260,6 +260,39 @@ public class MemberWrap< C,
 		return member instanceof Method ? (Method) member
 										: null;
 	}
+
+	/**
+	 * 
+	 * @return {@code true} if {@link member} is a {@link Field}; or is a
+	 *         {@link Method} and {@link Method#getParameterCount()}
+	 *         {@code == 1} and {@link Method#getReturnType()} is {@link void}
+	 *         or {@link Method#getDeclaringClass()}; else {@code false}
+	 */
+	public boolean
+		   isSettable(){
+		return runByDeclaration( field-> true,
+								 method-> method.getParameterCount() == 1
+										  && (method.getReturnType() == void.class
+											  || method.getReturnType() == method.getDeclaringClass()),
+								 constructor-> false,
+								 false );
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if {@link member} is a {@link Field} or
+	 *         {@link Constructor} or a {@link Method} with
+	 *         {@link Method#getParameterCount()} is {@code 0} and
+	 *         {@link Method#getReturnType()} isn't {@link void.class}
+	 */
+	public boolean
+		   isGettable(){
+		return runByDeclaration( field-> true,
+								 method-> method.getParameterCount() == 0
+										  && method.getReturnType() != void.class,
+								 constructor-> true,
+								 false );
+	}
 	@Override
 	public < T extends Annotation >
 		   T
