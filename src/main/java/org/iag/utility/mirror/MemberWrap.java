@@ -111,10 +111,21 @@ public class MemberWrap< C,
 	}
 
 	/**
-	 * Sets the {@code local} {@link member} to either the {@link Field} in
-	 * {@code clazz} with that matches the parameter String, or a {@link Method}
+	 * Sets the {@code local} {@link member} to the first non-null element.
+	 * 
+	 * @param arr
+	 */
+	@SafeVarargs
+	protected MemberWrap( @NonNull Supplier<? extends AccessibleObject>... arr ){
+		this( Stream.of( arr )
+					.map( Supplier::get ) );
+	}
+
+	/**
+	 * Sets the {@code local} {@link member} to either a {@link Method}
 	 * in {@code clazz} with no parameters and has a name in [ name, getName,
-	 * hasName, isName ].
+	 * hasName, isName ] or the {@link Field} in {@code clazz} with that matches
+	 * the parameter String.
 	 * 
 	 * @see Class#getField(String)
 	 * @see Class#getDeclaredField(String)
