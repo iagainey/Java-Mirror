@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -610,10 +611,8 @@ public class MemberWrap< C,
 			  runByExecutable( @NonNull Function<? super Executable,
 												 ? extends O> onExecutable,
 							   O onNull ){
-		if( member instanceof Executable ){
-			return onExecutable.apply( (Executable) member );
-		}
-		return onNull;
+		return member instanceof Executable ? onExecutable.apply( (Executable) member )
+											: onNull;
 	}
 
 	protected < O >
@@ -627,18 +626,16 @@ public class MemberWrap< C,
 	/**
 	 * 
 	 * @param onMember
-	 * @return if {@link member} is not {@code null} , then
-	 *         onMembers.apply(Object), else onNull.
+	 * @return if {@link member} is not {@code null}, then
+	 *         {@link Function#apply(Object)}, else onNull.
 	 */
 	protected < O >
 			  O
 			  runByMember( @NonNull Function<? super Member,
 											 ? extends O> onMember,
 						   O onNull ){
-		if( member instanceof Member ){
-			return onMember.apply( (Member) member );
-		}
-		return onNull;
+		return member instanceof Member ? onMember.apply( (Member) member )
+										: onNull;
 	}
 
 	/**
@@ -737,7 +734,8 @@ public class MemberWrap< C,
 		}catch( NoSuchFieldException nsfe ){
 			try{
 				return clazz.getDeclaredField( fieldName );
-			}catch( NoSuchFieldException | SecurityException e1 ){
+			}catch( NoSuchFieldException
+					| SecurityException e1 ){
 				return null;
 			}
 		}catch( SecurityException se ){
