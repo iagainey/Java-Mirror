@@ -181,6 +181,13 @@ public class MemberWrap< C,
 								   objClazz ) );
 	}
 
+	/**
+	 * Sets member to the Constructor of constructedClass with one parameter of
+	 * paramClass.
+	 * 
+	 * @param paramClass
+	 * @param constructedClass
+	 */
 	public MemberWrap( @NonNull Class<C> paramClass,
 					   @NonNull Class<V> constructedClass ){
 		this( getConstructor( constructedClass,
