@@ -10,6 +10,7 @@ import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Objects;
@@ -557,7 +558,19 @@ public class MemberWrap< C,
 
 	/**
 	 * 
+	 * @return a {@code new String} that attempts to copy the signature of the
+	 *         {@link member}. If {@link member} is {@code null} then returns
+	 *         {@code "null"}
 	 */
+	public @NonNull String
+		   getSignature(){
+		return isMember() ? String.format( "%s %s%s",
+										   Modifier.toString( getModifiers() ),
+										   getName(),
+										   isExecutable() ? String.format( "(%s)",
+																		   (Object[]) getParameterTypes() )
+														  : "" )
+						  : "null";
 	}
 
 	/**
