@@ -288,9 +288,7 @@ public class MemberWrap< C,
 	public boolean
 		   isSettable(){
 		return runByDeclaration( field-> true,
-								 method-> method.getParameterCount() == 1
-										  && (method.getReturnType() == void.class
-											  || method.getReturnType() == method.getDeclaringClass()),
+								 MemberWrap::isSetterMethod,
 								 constructor-> false,
 								 false );
 	}
@@ -305,8 +303,7 @@ public class MemberWrap< C,
 	public boolean
 		   isGettable(){
 		return runByDeclaration( field-> true,
-								 method-> method.getParameterCount() == 0
-										  && method.getReturnType() != void.class,
+								 MemberWrap::isGetterMethod,
 								 constructor-> true,
 								 false );
 	}
@@ -982,5 +979,31 @@ public class MemberWrap< C,
 		}catch( SecurityException se ){
 			return null;
 		}
+	}
+
+	/**
+	 * 
+	 * @param method
+	 * @return {@code true} if method has only one parameter and
+	 *         {@link Method#getReturnType()} is {@link void.class} or the
+	 *         {@link Method#getDeclaringClass()}.
+	 */
+	protected static boolean
+			  isSetterMethod( @NonNull Method method ){
+		return method.getParameterCount() == 1
+			   && (method.getReturnType() == void.class
+				   || method.getReturnType() == method.getDeclaringClass());
+	}
+
+	/**
+	 * 
+	 * @param method
+	 * @return {@code true} if method has only zero parameters and
+	 *         {@link Method#getReturnType()} is not {@link void.class}.
+	 */
+	protected static boolean
+			  isGetterMethod( @NonNull Method method ){
+		return method.getParameterCount() == 0
+			   && method.getReturnType() != void.class;
 	}
 }
