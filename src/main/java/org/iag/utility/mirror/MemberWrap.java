@@ -694,14 +694,14 @@ public class MemberWrap< C,
 								@Nullable Function<? super Constructor<?>,
 												   ? extends O> ifConstructor,
 								@Nullable O onNull ){
-		if( member instanceof Field && ifField != null ){
-			return ifField.apply( (Field) member );
+		if( isField() && ifField != null ){
+			return ifField.apply( getField() );
 		}
-		if( member instanceof Method && ifMethod != null ){
-			return ifMethod.apply( (Method) member );
+		if( isMethod() && ifMethod != null ){
+			return ifMethod.apply( getMethod() );
 		}
-		if( member instanceof Constructor && ifConstructor != null ){
-			return ifConstructor.apply( (Constructor<?>) member );
+		if( isConstructor() && ifConstructor != null ){
+			return ifConstructor.apply( getConstructor() );
 		}
 		return onNull;
 	}
