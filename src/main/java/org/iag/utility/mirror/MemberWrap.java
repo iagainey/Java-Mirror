@@ -231,6 +231,15 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * 
+	 * @return member
+	 */
+	protected @Nullable AccessibleObject
+			  getMember(){
+		return member;
+	}
+
+	/**
 	 * @see MemberWrap#isConstructor()
 	 * 
 	 * @return {@link member} up-cast as {@link Constructor} if and only if
