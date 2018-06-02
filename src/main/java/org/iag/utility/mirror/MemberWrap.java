@@ -140,10 +140,10 @@ public class MemberWrap< C,
 	 */
 	public MemberWrap( @NonNull Class<C> clazz,
 					   @NonNull String name ){
-		this( getField( clazz,
-						name ),
-			  getGetterMethod( clazz,
-							   name ) );
+		this( ()-> getGetterMethod( clazz,
+									name ),
+			  ()-> getField( clazz,
+							 name ) );
 	}
 
 	@Override
