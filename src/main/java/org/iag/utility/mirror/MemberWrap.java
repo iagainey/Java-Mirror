@@ -293,6 +293,209 @@ public class MemberWrap< C,
 								 constructor-> true,
 								 false );
 	}
+
+	/**
+	 * This method will call {@link Field#get(Object)},
+	 * {@link Method#invoke(Object, Object...)}, or
+	 * {@link Constructor#newInstance(Object...)}.
+	 * 
+	 * <p>
+	 * If {@link member} has
+	 * {@link AccessibleObject#isAccessible()} {@code false}, this method will
+	 * <b>not</b> call {@link AccessibleObject#setAccessible(boolean)}
+	 * 
+	 * <p>
+	 * If {@link member} is a {@link Constructor} and
+	 * {@link Constructor#getParameterCount()} {@code == 0} then obj can be
+	 * {@code null} and a val will be returned.
+	 * 
+	 * <p>
+	 * If {@link member} is {@code static} then obj can be {@code null} and the
+	 * val
+	 * can be returned.
+	 * 
+	 * 
+	 * @param obj
+	 * @return {@code null} if {@link member} is {@code null} or an Exception is
+	 *         thrown. Else returns {@link Field#get(Object)}, or
+	 *         {@link Method#invoke(Object, Object...)}, or
+	 *         {@link Constructor#newInstance(Object...)} depending on
+	 *         {@link member}'s true type.
+	 */
+	@SuppressWarnings( "unchecked" )
+	public @Nullable V
+		   get( @NonNull C obj ){
+		return (V) runByDeclaration(
+									 field-> {
+										 try{
+											 return field.get( obj );
+										 }catch( IllegalArgumentException
+												 | IllegalAccessException e ){
+											 return null;
+										 }
+									 },
+									 method-> {
+										 try{
+											 return method.invoke( obj );
+										 }catch( IllegalAccessException
+												 | IllegalArgumentException
+												 | InvocationTargetException e ){
+											 return null;
+										 }
+									 },
+									 constructor-> {
+										 try{
+											 return constructor.getParameterCount() == 0 ? constructor.newInstance()
+																						 : constructor.newInstance( obj );
+										 }catch( InstantiationException
+												 | IllegalAccessException
+												 | IllegalArgumentException
+												 | InvocationTargetException e ){
+											 return null;
+										 }
+									 } );
+	}
+
+	/**
+	 * 
+	 * This method will call {@link Field#get(Object)},
+	 * {@link Method#invoke(Object, Object...)}, or
+	 * {@link Constructor#newInstance(Object...)}.
+	 * 
+	 * <p>
+	 * If {@link member} has
+	 * {@link AccessibleObject#isAccessible()} {@code false}, this method will
+	 * <b>not</b> call {@link AccessibleObject#setAccessible(boolean)}
+	 * 
+	 * <p>
+	 * If {@link member} is a {@link Constructor} and
+	 * {@link Constructor#getParameterCount()} {@code == 0} then obj can be
+	 * {@code null} and a val will be returned.
+	 * 
+	 * <p>
+	 * If {@link member} is {@code static} then obj can be {@code null} and the
+	 * value will be returned.
+	 * 
+	 * @param obj
+	 * @return {@code null} if {@link member} is {@code null}. Else returns
+	 *         {@link Field#get(Object)}, or
+	 *         {@link Method#invoke(Object, Object...)}, or
+	 *         {@link Constructor#newInstance(Object...)} depending on
+	 *         {@link member}'s true type.
+	 * 
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws InstantiationException
+	 */
+	@SuppressWarnings( "unchecked" )
+	public @Nullable V
+		   getThrow( @NonNull C obj ) throws IllegalArgumentException,
+									  IllegalAccessException,
+									  InvocationTargetException,
+									  InstantiationException{
+		if( isField() ){
+			return (V) getField().get( obj );
+		}
+		if( isMethod() ){
+			return (V) getMethod().invoke( obj );
+		}
+		if( isConstructor() ){
+			final Constructor<?> constructor = getConstructor();
+			if( constructor.getParameterCount() == 0 ){
+				return (V) constructor.newInstance();
+			}
+			if( constructor.getParameterCount() == 1
+				&& constructor.getParameterTypes()[ 0 ].isAssignableFrom( obj.getClass() ) ){
+				return (V) constructor.newInstance( obj );
+			}
+			throw new IllegalArgumentException( String.format( "Constructor<%s> is expected to have one parameter that can take %s or no parameters.",
+															   getSignature(),
+															   obj.getClass() ) );
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * This method will call {@link Field#set(Object, Object)} or
+	 * {@link Method#invoke(Object, Object...)}.
+	 * 
+	 * <p>
+	 * If {@link member} has
+	 * {@link AccessibleObject#isAccessible()} {@code false}, this method will
+	 * <b>not</b> call {@link AccessibleObject#setAccessible(boolean)}
+	 * 
+	 * @param obj
+	 * @param val
+	 * @return {@code true} if and only if {@link Field#set(Object, Object)} or
+	 *         {@link Method#invoke(Object, Object...)} did not throw
+	 *         {@link IllegalArgumentException}, {@link IllegalAccessExpection},
+	 *         {@link InvocationTargetException} and {@link member} is not
+	 *         {@code null}.
+	 */
+	public boolean
+		   set( @NonNull C obj,
+				@Nullable V val ){
+		return runByDeclaration(
+								 field-> {
+									 try{
+										 field.set( obj,
+													val );
+										 return true;
+									 }catch( IllegalArgumentException | IllegalAccessException e ){
+										 return false;
+									 }
+								 },
+								 method-> {
+									 try{
+										 method.invoke( obj,
+														val );
+										 return true;
+									 }catch( IllegalAccessException
+											 | IllegalArgumentException
+											 | InvocationTargetException e ){
+										 return false;
+									 }
+								 },
+								 null,
+								 false );
+	}
+
+	/**
+	 * 
+	 * This method will call {@link Field#set(Object, Object)} or
+	 * {@link Method#invoke(Object, Object...)}.
+	 * 
+	 * <p>
+	 * If {@link member} has
+	 * {@link AccessibleObject#isAccessible()} {@code false}, this method will
+	 * <b>not</b> call {@link AccessibleObject#setAccessible(boolean)}
+	 * 
+	 * @param obj
+	 * @param val
+	 * @return {@code true} if and only if {@link member} is not {@code null}.
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public boolean
+		   setThrow( @NonNull C obj,
+					 @Nullable V val ) throws IllegalArgumentException,
+									   IllegalAccessException,
+									   InvocationTargetException{
+		if( isField() ){
+			getField().set( obj,
+							val );
+			return true;
+		}
+		if( isMethod() ){
+			getMethod().invoke( obj,
+								val );
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public < T extends Annotation >
 		   T
