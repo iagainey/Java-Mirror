@@ -828,6 +828,60 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * @see Class#getMethods()
+	 * @see Class#getFields()
+	 * @see Class#getDeclaredMethods()
+	 * @see Class#getDeclaredFields()
+	 * 
+	 * @param clazz
+	 * @return a {@code new} {@link Stream} of {@link MemberWrap}ped
+	 *         {@link Field}s and {@link Method}s of clazz.
+	 */
+	public static < C >
+		   @NonNull Stream<MemberWrap<C,
+									  Object>>
+		   getMemberStream( @NonNull Class<C> clazz ){
+		return Stream.concat( getFieldStream( clazz ),
+							  getMethodStream( clazz ) );
+	}
+
+	/**
+	 * @see Class#getFields()
+	 * @see Class#getDeclaredFields()
+	 * 
+	 * @param clazz
+	 * @return a {@code new} {@link Stream} of {@link MemberWrap}ped
+	 *         {@link Field}s of clazz
+	 */
+	public static < C >
+		   @NonNull Stream<MemberWrap<C,
+									  Object>>
+		   getFieldStream( @NonNull Class<C> clazz ){
+		return Stream.concat( Stream.of( clazz.getFields() ),
+							  Stream.of( clazz.getDeclaredFields() ) )
+					 .distinct()
+					 .map( MemberWrap::new );
+	}
+
+	/**
+	 * @see Class#getMethods()
+	 * @see Class#getDeclaredMethods()
+	 * 
+	 * @param clazz
+	 * @return a {@code new} {@link Stream} of {@link MemberWrap}ped
+	 *         {@link Method}s of clazz
+	 */
+	public static < C >
+		   @NonNull Stream<MemberWrap<C,
+									  Object>>
+		   getMethodStream( @NonNull Class<C> clazz ){
+		return Stream.concat( Stream.of( clazz.getMethods() ),
+							  Stream.of( clazz.getDeclaredMethods() ) )
+					 .distinct()
+					 .map( MemberWrap::new );
+	}
+
+	/**
 	 * @see Class#getField(String)
 	 * @see Class#getDeclaredField(String)
 	 * 
