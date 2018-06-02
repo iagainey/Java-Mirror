@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -704,6 +705,19 @@ public class MemberWrap< C,
 			return ifConstructor.apply( getConstructor() );
 		}
 		return onNull;
+	}
+
+	protected void
+			  runByDeclaration( @Nullable Consumer<? super Field> ifField,
+								@Nullable Consumer<? super Method> ifMethod,
+								@Nullable Consumer<? super Constructor<?>> ifConstructor ){
+		if( isField() && ifField != null ){
+			ifField.accept( getField() );
+		}else if( isMethod() && ifMethod != null ){
+			ifMethod.accept( getMethod() );
+		}else if( isConstructor() && ifConstructor != null ){
+			ifConstructor.accept( getConstructor() );
+		}
 	}
 
 	/**
