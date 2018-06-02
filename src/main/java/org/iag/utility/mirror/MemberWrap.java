@@ -668,8 +668,8 @@ public class MemberWrap< C,
 			  runByExecutable( @NonNull Function<? super Executable,
 												 ? extends O> onExecutable,
 							   O onNull ){
-		return member instanceof Executable ? onExecutable.apply( (Executable) member )
-											: onNull;
+		return isExecutable() ? onExecutable.apply( getExecutable() )
+							  : onNull;
 	}
 
 	/**
