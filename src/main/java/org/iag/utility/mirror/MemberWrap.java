@@ -243,6 +243,18 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * 
+	 * @return {@link member} up-cast as {@link Executable} if and only if
+	 *         {@link member} is a {@link Constructor} or {@link Method}, else
+	 *         {@code null}
+	 */
+	public @Nullable Executable
+		   getExecutable(){
+		return member instanceof Executable ? (Executable) member
+											: null;
+	}
+
+	/**
 	 * @see MemberWrap#isField()
 	 * 
 	 * @return {@link member} up-cast as {@link Field} if and only if
