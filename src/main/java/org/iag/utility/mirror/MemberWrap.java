@@ -557,31 +557,11 @@ public class MemberWrap< C,
 
 	/**
 	 * 
-	 * @param onMember
-	 * @return if {@link member} is not {@code null}, then
-	 *         onMembers.apply(Object), else {@code null}.
 	 */
-	protected < O >
-			  @Nullable O
-			  runByAccessible( @NonNull Function<? super AccessibleObject,
-												 ? extends O> onMember ){
-		return runByAccessible( onMember,
-								null );
 	}
 
 	/**
-	 * 
-	 * @param onMember
-	 * @return if {@link member} is not {@code null}, then
-	 *         onMembers.apply(Object), else onNull.
 	 */
-	protected < O >
-			  O
-			  runByAccessible( @NonNull Function<? super AccessibleObject,
-												 ? extends O> onMember,
-							   O onNull ){
-		return member != null ? onMember.apply( member )
-							  : onNull;
 	}
 
 	/**
