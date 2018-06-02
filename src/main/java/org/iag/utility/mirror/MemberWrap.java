@@ -19,6 +19,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -528,11 +531,17 @@ public class MemberWrap< C,
 		return null;
 	}
 
+	/**
+	 * @see java.lang.reflect.Member#getModifiers()
+	 * 
+	 * @return if the {@link member} is {@code null}, returns {@code 4096}, else
+	 *         {@link Member#getModifiers()}
+	 */
 	@Override
-	public int
+	public @Min( 0 ) @Max( 4096 ) int
 		   getModifiers(){
-		// TODO Auto-generated method stub
-		return 0;
+		return runByMember( Member::getModifiers,
+							4096 );
 	}
 
 	@Override
