@@ -57,7 +57,6 @@ import org.eclipse.jdt.annotation.Nullable;
 public class MemberWrap< C,
 						 V >
 					   implements
-					   AnnotatedElement,
 					   GenericDeclaration,
 					   Member {
 	/**
