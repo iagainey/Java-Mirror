@@ -146,6 +146,28 @@ public class MemberWrap< C,
 							 name ) );
 	}
 
+	/**
+	 * Sets the {@code local} {@link member} to the first of: a Method with one
+	 * parameter that matches valClazz and whom's return type {@link void} or
+	 * objClazz and, whom's name is in [ name, setName ]; or a Field whose name
+	 * matches name; or a method who has no parameters, and name is in [name,
+	 * getName, isName, hasName], and return type is not {@link void}.
+	 * 
+	 * @param objClazz
+	 * @param name
+	 * @param valClazz
+	 */
+	public MemberWrap( @NonNull Class<C> objClazz,
+					   @NonNull String name,
+					   @NonNull Class<V> valClazz ){
+		this( ()-> getSetterMethod( objClazz,
+									name,
+									valClazz ),
+			  ()-> getField( objClazz,
+							 name ),
+			  ()-> getGetterMethod( objClazz,
+									name ) );
+	}
 	@Override
 	public < T extends Annotation >
 		   T
