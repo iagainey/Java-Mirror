@@ -636,6 +636,17 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * 
+	 * @return {@code true} if and only if {@link member} is not {@code null}
+	 *         and {@link AccessibleObject#isAccessible()} is {@code true}.
+	 */
+	public boolean
+		   isAccessible(){
+		return member != null ? member.isAccessible()
+							  : false;
+	}
+
+	/**
 	 * @see java.lang.reflect.Member#isSynthetic()
 	 * @return if {@link member} is {@code null} then {@code false}, else
 	 *         {@link Member#isSynthetic}
@@ -645,6 +656,19 @@ public class MemberWrap< C,
 		   isSynthetic(){
 		return runByMember( Member::isSynthetic,
 							false );
+	}
+
+	/**
+	 * If {@link member} is not {@code null} then attempts to set the Accessible
+	 * flag to the parameter.
+	 * 
+	 * @see AccessibleObject#setAccessible(boolean)
+	 * @param flag
+	 */
+	public void
+		   setAccessible( boolean flag ){
+		if( member != null )
+			member.setAccessible( flag );
 	}
 
 	/**
