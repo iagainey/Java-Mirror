@@ -3,6 +3,7 @@ package org.iag.utility.mirror;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
@@ -11,6 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Objects;
@@ -534,6 +537,52 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then {@code null}, else
+	 *         {@link Executable#getAnnotatedExceptionTypes()}
+	 */
+	public @Nullable AnnotatedType[]
+		   getAnnotatedExceptionTypes(){
+		return runByExecutable( Executable::getAnnotatedExceptionTypes,
+								new AnnotatedType[0] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then {@code null}, else
+	 *         {@link Executable#getAnnotatedParameterTypes()}
+	 */
+	public @Nullable AnnotatedType[]
+		   getAnnotatedParameterTypes(){
+		return runByExecutable( Executable::getAnnotatedParameterTypes,
+								new AnnotatedType[0] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then {@code null}, else
+	 *         {@link Executable#getAnnotatedReturnType()}
+	 */
+	public @Nullable AnnotatedType
+		   getAnnotatedReceiverType(){
+		return runByExecutable( Executable::getAnnotatedReceiverType );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then {@code null}, else
+	 *         {@link Executable#getAnnotatedReturnType()}
+	 */
+	public @Nullable AnnotatedType
+		   getAnnotatedReturnType(){
+		return runByExecutable( Executable::getAnnotatedReturnType );
+	}
+
+	/**
 	 * @see java.lang.reflect.AnnotatedElement#getAnnotations()
 	 * @return if {@link member} is {@code null} then an empty array, else
 	 *         {@link AccessibleObject#getAnnotations()}
@@ -565,7 +614,7 @@ public class MemberWrap< C,
 	 *         {@link AccessibleObject#getDeclaredAnnotations()}
 	 */
 	@Override
-	public Annotation[]
+	public @NonNull Annotation[]
 		   getDeclaredAnnotations(){
 		return member != null ? member.getDeclaredAnnotations()
 							  : new Annotation[0];
@@ -582,6 +631,41 @@ public class MemberWrap< C,
 		   getDeclaredAnnotationsByType( @NonNull Class<T> annotationClass ){
 		return member != null ? member.getDeclaredAnnotationsByType( annotationClass )
 							  : (T[]) new Annotation[0];
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty array, else {@link Executable#getExceptionTypes()}
+	 */
+	public @NonNull Class<?>[]
+		   getExceptionTypes(){
+		return runByExecutable( Executable::getExceptionTypes,
+								new Class<?>[0] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty array, else
+	 *         {@link Executable#getGenericExceptionTypes()}
+	 */
+	public @NonNull Type[]
+		   getGenericExceptionTypes(){
+		return runByExecutable( Executable::getGenericExceptionTypes,
+								new Type[0] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty array, else
+	 *         {@link Executable#getGenericParameterTypes()}
+	 */
+	public @NonNull Type[]
+		   getGenericParameterTypes(){
+		return runByExecutable( Executable::getGenericParameterTypes,
+								new Type[0] );
 	}
 
 	/**
@@ -623,12 +707,46 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty array, else {@link Executable#getParameters()}
+	 */
+	public @NonNull Parameter[]
+		   getParameters(){
+		return runByExecutable( Executable::getParameters,
+								new Parameter[0] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then an empty two dim-array, else
+	 *         {@link Executable#getParameterAnnotations()}
+	 */
+	public @NonNull Annotation[][]
+		   getParameterAnnotations(){
+		return runByExecutable( Executable::getParameterAnnotations,
+								new Annotation[0][] );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
+	 *         then {@code -1}, else {@link Executable#getParameterCount()}
+	 */
+	public @Min( -1 ) int
+		   getParameterCount(){
+		return runByExecutable( Executable::getParameterCount,
+								-1 );
+	}
+
+	/**
 	 * @return if {@link member} is not a {@link Method} or {@link Constructor},
 	 *         then an empty array, else {@link Executable#getParameterTypes()}
 	 */
 	public @NonNull Class<?>[]
 		   getParameterTypes(){
-		return runByExecutable( exe-> exe.getParameterTypes(),
+		return runByExecutable( Executable::getParameterTypes,
 								new Class<?>[0] );
 	}
 
@@ -639,7 +757,7 @@ public class MemberWrap< C,
 	 *         {@link GenericDeclaration#getTypeParameters()}
 	 */
 	@Override
-	public TypeVariable<?>[]
+	public @NonNull TypeVariable<?>[]
 		   getTypeParameters(){
 		return member instanceof GenericDeclaration ? ((GenericDeclaration) member).getTypeParameters()
 													: new TypeVariable<?>[0];
@@ -686,6 +804,18 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * @see java.lang.reflect.Executable#isVarArgs()
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor}
+	 *         then {@code false}, else
+	 *         {@link GenericDeclaration#isVarArgs()}
+	 */
+	public boolean
+		   isVarArgs(){
+		return runByExecutable( Executable::isVarArgs,
+								false );
+	}
+
+	/**
 	 * If {@link member} is not {@code null} then attempts to set the Accessible
 	 * flag to the parameter.
 	 * 
@@ -696,6 +826,18 @@ public class MemberWrap< C,
 		   setAccessible( boolean flag ){
 		if( member != null )
 			member.setAccessible( flag );
+	}
+
+	/**
+	 * 
+	 * @return if {@link member} is not a {@link Method} or {@link Constructor}
+	 *         then {@code "null"}, else
+	 *         {@link GenericDeclaration#toGenericString()}
+	 */
+	public @NonNull String
+		   toGenericString(){
+		return runByExecutable( Executable::toGenericString,
+								"null" );
 	}
 
 	/**
