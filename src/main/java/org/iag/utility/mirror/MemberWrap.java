@@ -234,7 +234,7 @@ public class MemberWrap< C,
 	 * 
 	 * @return member
 	 */
-	protected @Nullable AccessibleObject
+	protected final @Nullable AccessibleObject
 			  getMember(){
 		return member;
 	}
