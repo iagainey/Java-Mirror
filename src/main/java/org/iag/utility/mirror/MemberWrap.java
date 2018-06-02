@@ -546,6 +546,20 @@ public class MemberWrap< C,
 	}
 
 	/**
+	 * @see java.lang.reflect.AnnotatedElement#getAnnotationsByType(java.lang.Class)
+	 * @return {@link member} is not {@code null} then
+	 *         {@link AccessibleObject#getAnnotationsByType(Class)}, else an
+	 *         empty array.
+	 */
+	@SuppressWarnings( "unchecked" )
+	public < T extends Annotation >
+		   @NonNull T[]
+		   getAnnotationsByType( @NonNull Class<T> annotationClass ){
+		return member != null ? member.getAnnotationsByType( annotationClass )
+							  : (T[]) new Annotation[0];
+	}
+
+	/**
 	 * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
 	 * @return if {@link member} is {@code null} then an empty array, else
 	 *         {@link AccessibleObject#getDeclaredAnnotations()}
@@ -555,6 +569,19 @@ public class MemberWrap< C,
 		   getDeclaredAnnotations(){
 		return member != null ? member.getDeclaredAnnotations()
 							  : new Annotation[0];
+	}
+
+	/**
+	 * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotationsByType(java.lang.Class)
+	 * @return if {@link member} is {@code null} then an empty array, else
+	 *         {@link AccessibleObject#getDeclaredAnnotationsByType()}
+	 */
+	@SuppressWarnings( "unchecked" )
+	public < T extends Annotation >
+		   @NonNull T[]
+		   getDeclaredAnnotationsByType( @NonNull Class<T> annotationClass ){
+		return member != null ? member.getDeclaredAnnotationsByType( annotationClass )
+							  : (T[]) new Annotation[0];
 	}
 
 	/**
