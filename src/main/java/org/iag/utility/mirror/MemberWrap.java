@@ -224,6 +224,42 @@ public class MemberWrap< C,
 		   isMember(){
 		return member != null;
 	}
+
+	/**
+	 * @see MemberWrap#isConstructor()
+	 * 
+	 * @return {@link member} up-cast as {@link Constructor} if and only if
+	 *         {@link member} is a {@link Constructor}, else {@code null}
+	 */
+	public @Nullable Constructor<?>
+		   getConstructor(){
+		return member instanceof Constructor ? (Constructor<?>) member
+											 : null;
+	}
+
+	/**
+	 * @see MemberWrap#isField()
+	 * 
+	 * @return {@link member} up-cast as {@link Field} if and only if
+	 *         {@link member} is a {@link Field}, else {@code null}
+	 */
+	public @Nullable Field
+		   getField(){
+		return member instanceof Field ? (Field) member
+									   : null;
+	}
+
+	/**
+	 * @see MemberWrap#isMethod()
+	 * 
+	 * @return {@link member} up-cast as {@link Method} if and only if
+	 *         {@link member} is a {@link Method}, else {@code null}
+	 */
+	public @Nullable Method
+		   getMethod(){
+		return member instanceof Method ? (Method) member
+										: null;
+	}
 	@Override
 	public < T extends Annotation >
 		   T
