@@ -168,6 +168,62 @@ public class MemberWrap< C,
 			  ()-> getGetterMethod( objClazz,
 									name ) );
 	}
+
+	/**
+	 * 
+	 * @return {@code true} if and only if {@link member} is a
+	 *         {@link Constructor}
+	 */
+	public boolean
+		   isConstructor(){
+		return member instanceof Constructor;
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if and only if {@link member} is {@code null}
+	 */
+	public boolean
+		   isEmpty(){
+		return member == null;
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if and only if {@link member} is a {@link Field}
+	 */
+	public boolean
+		   isField(){
+		return member instanceof Field;
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if and only if {@link member} is a {@link Method}
+	 */
+	public boolean
+		   isMethod(){
+		return member instanceof Method;
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if {@link member} is a {@link Method} or
+	 *         {@link Constructor}
+	 */
+	public boolean
+		   isExecutable(){
+		return member instanceof Executable;
+	}
+
+	/**
+	 * 
+	 * @return {@code true} if {@link member} is not {@code null}
+	 */
+	public boolean
+		   isMember(){
+		return member != null;
+	}
 	@Override
 	public < T extends Annotation >
 		   T
