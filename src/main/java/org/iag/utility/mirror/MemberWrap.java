@@ -159,7 +159,9 @@ public class MemberWrap< C,
 	 * parameter that matches valClazz and whom's return type {@link void} or
 	 * objClazz and, whom's name is in [ name, setName ]; or a Field whose name
 	 * matches name; or a method who has no parameters, and name is in [name,
-	 * getName, isName, hasName], and return type is not {@link void}.
+	 * getName, isName, hasName], and return type is not {@link void}, or a
+	 * {@link Constructor} in valClazz that takes objClazz as the only
+	 * parameter.
 	 * 
 	 * @param objClazz
 	 * @param name
@@ -174,7 +176,15 @@ public class MemberWrap< C,
 			  ()-> getField( objClazz,
 							 name ),
 			  ()-> getGetterMethod( objClazz,
-									name ) );
+									name ),
+			  ()-> getConstructor( valClazz,
+								   objClazz ) );
+	}
+
+	public MemberWrap( @NonNull Class<C> paramClass,
+					   @NonNull Class<V> constructedClass ){
+		this( getConstructor( constructedClass,
+							  paramClass ) );
 	}
 
 	/**
@@ -337,8 +347,7 @@ public class MemberWrap< C,
 	 * 
 	 * <p>
 	 * If {@link member} is {@code static} then obj can be {@code null} and the
-	 * val
-	 * can be returned.
+	 * val can be returned.
 	 * 
 	 * 
 	 * @param obj
@@ -1302,5 +1311,35 @@ public class MemberWrap< C,
 			  isGetterMethod( @NonNull Method method ){
 		return method.getParameterCount() == 0
 			   && method.getReturnType() != void.class;
+	}
+
+	/**
+	 * 
+	 * @see Class#getConstructor(String, Class...)
+	 * @see Class#getDeclaredConstructor(String, Class...)
+	 * 
+	 * @param clazz
+	 * @param methodName
+	 * @param parameters
+	 * @return a Constructor that matches the parameter declaration; from either
+	 *         {@link clazz#getConstructor(Class...)} or
+	 *         {@link clazz#getDeclaredConstructor(Class...)}
+	 */
+	protected static < V >
+			  @Nullable Constructor<V>
+			  getConstructor( @NonNull Class<V> constructorClass,
+							  @NonNull Class<?> param ){
+		try{
+			return constructorClass.getConstructor( param );
+		}catch( NoSuchMethodException e ){
+			return null;
+		}catch( SecurityException e ){
+			try{
+				return constructorClass.getDeclaredConstructor( param );
+			}catch( NoSuchMethodException
+					| SecurityException e1 ){
+				return null;
+			}
+		}
 	}
 }
