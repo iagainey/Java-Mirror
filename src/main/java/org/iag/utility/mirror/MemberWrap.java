@@ -1322,6 +1322,32 @@ public class MemberWrap< C,
 
 	/**
 	 * 
+	 * 
+	 * @see Class#getConstructor(String, Class...)
+	 * @see Class#getDeclaredConstructor(String, Class...)
+	 * 
+	 * @param constructorClass
+	 * @param param
+	 * @return the first of [ constructorClass.getConstructor(param),
+	 *         constructorClass.getDeclaredConstructor(param),
+	 *         constructorClass.getConstructor(),
+	 *         constructorClass.getDeclaredConstructor() ]
+	 */
+	protected static < V >
+			  @Nullable Constructor<V>
+			  getConstructor( @NonNull Class<V> constructorClass,
+							  @NonNull Class<?> param ){
+		return Stream.of( (Supplier<Constructor<V>>) ()-> getParamConstructor( constructorClass,
+																			   param ),
+						  (Supplier<Constructor<V>>) ()-> getEmptyConstructor( constructorClass ) )
+					 .map( Supplier::get )
+					 .filter( Objects::nonNull )
+					 .findFirst()
+					 .orElse( null );
+	}
+
+	/**
+	 * 
 	 * @see Class#getConstructor(String, Class...)
 	 * @see Class#getDeclaredConstructor(String, Class...)
 	 * 
@@ -1334,8 +1360,8 @@ public class MemberWrap< C,
 	 */
 	protected static < V >
 			  @Nullable Constructor<V>
-			  getConstructor( @NonNull Class<V> constructorClass,
-							  @NonNull Class<?> param ){
+			  getParamConstructor( @NonNull Class<V> constructorClass,
+								   @NonNull Class<?> param ){
 		try{
 			return constructorClass.getConstructor( param );
 		}catch( NoSuchMethodException e ){
@@ -1345,6 +1371,34 @@ public class MemberWrap< C,
 				return constructorClass.getDeclaredConstructor( param );
 			}catch( NoSuchMethodException
 					| SecurityException e1 ){
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @see Class#getConstructor(String, Class...)
+	 * @see Class#getDeclaredConstructor(String, Class...)
+	 * 
+	 * @param clazz
+	 * @param methodName
+	 * @param parameters
+	 * @return a Constructor that has no parameter declared; from either
+	 *         {@link clazz#getConstructor(Class...)} or
+	 *         {@link clazz#getDeclaredConstructor(Class...)}
+	 */
+	protected static < V >
+			  @Nullable Constructor<V>
+			  getEmptyConstructor( @NonNull Class<V> clazz ){
+		try{
+			return clazz.getConstructor();
+		}catch( NoSuchMethodException e ){
+			return null;
+		}catch( SecurityException e ){
+			try{
+				return clazz.getDeclaredConstructor();
+			}catch( NoSuchMethodException | SecurityException e1 ){
 				return null;
 			}
 		}
