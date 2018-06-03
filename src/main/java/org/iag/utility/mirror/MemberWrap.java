@@ -115,7 +115,7 @@ public class MemberWrap< C,
 	private MemberWrap( @NonNull Stream<? extends AccessibleObject> stream ){
 		this( stream.filter( Objects::nonNull )
 					.findFirst()
-					.orElseGet( null ) );
+					.orElse( null ) );
 	}
 
 	/**
