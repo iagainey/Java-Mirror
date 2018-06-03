@@ -201,7 +201,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isConstructor(){
-		return member instanceof Constructor;
+		return getMember() instanceof Constructor;
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isEmpty(){
-		return member == null;
+		return getMember() == null;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isField(){
-		return member instanceof Field;
+		return getMember() instanceof Field;
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isMethod(){
-		return member instanceof Method;
+		return getMember() instanceof Method;
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isExecutable(){
-		return member instanceof Executable;
+		return getMember() instanceof Executable;
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isMember(){
-		return member != null;
+		return getMember() != null;
 	}
 
 	/**
@@ -267,8 +267,8 @@ public class MemberWrap< C,
 	 */
 	public @Nullable Constructor<?>
 		   getConstructor(){
-		return member instanceof Constructor ? (Constructor<?>) member
-											 : null;
+		return isConstructor() ? (Constructor<?>) getMember()
+							   : null;
 	}
 
 	/**
@@ -279,8 +279,8 @@ public class MemberWrap< C,
 	 */
 	public @Nullable Executable
 		   getExecutable(){
-		return member instanceof Executable ? (Executable) member
-											: null;
+		return isExecutable() ? (Executable) getMember()
+							  : null;
 	}
 
 	/**
@@ -291,8 +291,8 @@ public class MemberWrap< C,
 	 */
 	public @Nullable Field
 		   getField(){
-		return member instanceof Field ? (Field) member
-									   : null;
+		return isField() ? (Field) getMember()
+						 : null;
 	}
 
 	/**
@@ -303,8 +303,8 @@ public class MemberWrap< C,
 	 */
 	public @Nullable Method
 		   getMethod(){
-		return member instanceof Method ? (Method) member
-										: null;
+		return isMethod() ? (Method) getMember()
+						  : null;
 	}
 
 	/**
@@ -548,8 +548,8 @@ public class MemberWrap< C,
 	public < T extends Annotation >
 		   @Nullable T
 		   getAnnotation( @NonNull Class<T> arg0 ){
-		return member != null ? member.getAnnotation( arg0 )
-							  : null;
+		return isMember() ? getMember().getAnnotation( arg0 )
+						  : null;
 	}
 
 	/**
@@ -606,8 +606,8 @@ public class MemberWrap< C,
 	@Override
 	public @NonNull Annotation[]
 		   getAnnotations(){
-		return member != null ? member.getAnnotations()
-							  : new Annotation[0];
+		return isMember() ? getMember().getAnnotations()
+						  : new Annotation[0];
 	}
 
 	/**
@@ -620,8 +620,8 @@ public class MemberWrap< C,
 	public < T extends Annotation >
 		   @NonNull T[]
 		   getAnnotationsByType( @NonNull Class<T> annotationClass ){
-		return member != null ? member.getAnnotationsByType( annotationClass )
-							  : (T[]) new Annotation[0];
+		return isMember() ? getMember().getAnnotationsByType( annotationClass )
+						  : (T[]) new Annotation[0];
 	}
 
 	/**
@@ -632,8 +632,8 @@ public class MemberWrap< C,
 	@Override
 	public @NonNull Annotation[]
 		   getDeclaredAnnotations(){
-		return member != null ? member.getDeclaredAnnotations()
-							  : new Annotation[0];
+		return isMember() ? getMember().getDeclaredAnnotations()
+						  : new Annotation[0];
 	}
 
 	/**
@@ -645,8 +645,8 @@ public class MemberWrap< C,
 	public < T extends Annotation >
 		   @NonNull T[]
 		   getDeclaredAnnotationsByType( @NonNull Class<T> annotationClass ){
-		return member != null ? member.getDeclaredAnnotationsByType( annotationClass )
-							  : (T[]) new Annotation[0];
+		return isMember() ? getMember().getDeclaredAnnotationsByType( annotationClass )
+						  : (T[]) new Annotation[0];
 	}
 
 	/**
@@ -775,8 +775,8 @@ public class MemberWrap< C,
 	@Override
 	public @NonNull TypeVariable<?>[]
 		   getTypeParameters(){
-		return member instanceof GenericDeclaration ? ((GenericDeclaration) member).getTypeParameters()
-													: new TypeVariable<?>[0];
+		return getMember() instanceof GenericDeclaration ? ((GenericDeclaration) getMember()).getTypeParameters()
+														 : new TypeVariable<?>[0];
 	}
 
 	/**
@@ -803,8 +803,8 @@ public class MemberWrap< C,
 	 */
 	public boolean
 		   isAccessible(){
-		return member != null ? member.isAccessible()
-							  : false;
+		return isMember() ? getMember().isAccessible()
+						  : false;
 	}
 
 	/**
@@ -840,8 +840,8 @@ public class MemberWrap< C,
 	 */
 	public void
 		   setAccessible( boolean flag ){
-		if( member != null )
-			member.setAccessible( flag );
+		if( isMember() )
+			getMember().setAccessible( flag );
 	}
 
 	/**
@@ -1011,8 +1011,8 @@ public class MemberWrap< C,
 	 */
 	public int
 		   hashCode(){
-		return member != null ? member.hashCode()
-							  : 0;
+		return isMember() ? getMember().hashCode()
+						  : 0;
 	}
 
 	/**
