@@ -897,8 +897,8 @@ public class MemberWrap< C,
 			  @Nullable O
 			  runByMember( @NonNull Function<? super Member,
 											 ? extends O> onMember ){
-		return runByExecutable( onMember,
-								null );
+		return runByMember( onMember,
+							null );
 	}
 
 	/**
